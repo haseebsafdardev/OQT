@@ -1,4 +1,5 @@
 import "./Welcome.css";
+import { useNavigate } from "react-router-dom";
 
 const ayats = [
   "﷽",
@@ -9,27 +10,36 @@ const ayats = [
 ];
 
 function Welcome() {
+  const navigate = useNavigate();
+
   return (
     <div className="welcome-wrapper">
-
-      {/* Quranic Watermarks */}
       <div className="quran-pattern">
         {ayats.map((ayat, index) => (
           <span key={index} className="ayat">{ayat}</span>
         ))}
       </div>
 
-      {/* Welcome Card */}
       <div className="welcome-card">
         <img src="/Logo.png" alt="Online Quran Tutor" className="logo" />
         <h1 className="title">Learn Quran Anytime, Anywhere</h1>
 
-        <button className="btn primary">Sign Up as Student</button>
+        <button
+          className="btn primary"
+          onClick={() => navigate("/signup-student")}
+        >
+          Sign Up as Student
+        </button>
         <button className="btn outline">Sign In</button>
 
         <div className="divider">OR</div>
 
-        <button className="btn primary">Sign Up as Tutor</button>
+        <button
+          className="btn primary"
+          onClick={() => navigate("/signup-tutor")}
+        >
+          Sign Up as Tutor
+        </button>
         <button className="btn outline">Sign In</button>
       </div>
     </div>
