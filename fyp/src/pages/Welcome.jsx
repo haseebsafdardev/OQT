@@ -14,33 +14,52 @@ function Welcome() {
 
   return (
     <div className="welcome-wrapper">
+
+      {/* Quranic Watermarks */}
       <div className="quran-pattern">
         {ayats.map((ayat, index) => (
           <span key={index} className="ayat">{ayat}</span>
         ))}
       </div>
 
+      {/* Welcome Card */}
       <div className="welcome-card">
         <img src="/Logo.png" alt="Online Quran Tutor" className="logo" />
         <h1 className="title">Learn Quran Anytime, Anywhere</h1>
 
+        {/* Student Signup */}
         <button
           className="btn primary"
           onClick={() => navigate("/signup-student")}
         >
           Sign Up as Student
         </button>
-        <button className="btn outline">Sign In</button>
+
+        {/* Student Login */}
+        <button
+          className="btn outline"
+          onClick={() => navigate("/login")}
+        >
+          Sign In
+        </button>
 
         <div className="divider">OR</div>
 
+        {/* Tutor Signup */}
         <button
           className="btn primary"
           onClick={() => navigate("/signup-tutor")}
         >
           Sign Up as Tutor
         </button>
-        <button className="btn outline">Sign In</button>
+
+        {/* Tutor Login */}
+        <button
+          className="btn outline"
+          onClick={() => navigate("/login")}
+        >
+          Sign In
+        </button>
       </div>
     </div>
   );

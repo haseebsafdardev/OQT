@@ -1,62 +1,89 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Country, State, City } from "country-state-city";
+import ctz from "countries-and-timezones";
 import "./Signup.css";
 
 function StudentSignup() {
   const navigate = useNavigate();
 
+  // Form state
   const [image, setImage] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const [countries, setCountries] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [timeZones, setTimeZones] = useState([]);
+  const [fullName, setFullName] = useState("");
+  const [dob, setDob] = useState("");
+  const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [isGuardian, setIsGuardian] = useState("");
+  const [learningGoals, setLearningGoals] = useState([]);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Location & timezone
   const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
   const [city, setCity] = useState("");
-  const [timeZone, setTimeZone] = useState("");
+  const [timeZones, setTimeZones] = useState([]);
+  const [selectedTimeZone, setSelectedTimeZone] = useState("");
 
-  /* Load Countries */
-  useEffect(() => {
-    fetch("https://countriesnow.space/api/v0.1/countries")
-      .then(res => res.json())
-      .then(data => setCountries(data.data))
-      .catch(err => console.error(err));
-  }, []);
-
-  /* Load Cities & Timezones when Country changes */
-  useEffect(() => {
-    if (!country) return;
-
-    const selected = countries.find(c => c.country === country);
-    setCities(selected ? selected.cities : []);
-    setCity("");
-    setTimeZone("");
-
-    fetch("http://worldtimeapi.org/api/timezone")
-      .then(res => res.json())
-      .then(data => {
-        const filtered = data.filter(tz =>
-          tz.toLowerCase().includes(country.toLowerCase())
-        );
-        setTimeZones(filtered);
-      });
-  }, [country, countries]);
-
+  // Handle image preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) setImage(URL.createObjectURL(file));
   };
 
+  // Handle learning goals
+  const handleGoalChange = (goal) => {
+    setLearningGoals(prev =>
+      prev.includes(goal) ? prev.filter(g => g !== goal) : [...prev, goal]
+    );
+  };
+
+  // Update time zones when country changes
+  useEffect(() => {
+    if (!country) {
+      setTimeZones([]);
+      setSelectedTimeZone("");
+      return;
+    }
+
+    const tzs = ctz.getTimezonesForCountry(country);
+    if (tzs) setTimeZones(tzs);
+    setSelectedTimeZone("");
+  }, [country]);
+
+  // Form submit
   const handleSignup = (e) => {
     e.preventDefault();
 
-    // simulate successful registration
+    if (!gender) return alert("Please select your gender.");
+    if (!isGuardian) return alert("Please select whether you are a guardian or not.");
+    if (learningGoals.length === 0) return alert("Please select at least one learning goal.");
+    if (password !== confirmPassword) return alert("Passwords do not match.");
+    if (!country || !state || !city || !selectedTimeZone) return alert("Please select your location and time zone.");
+
+    // Save student to localStorage
+    const students = JSON.parse(localStorage.getItem("students") || "[]");
+    students.push({
+      fullName,
+      dob,
+      email,
+      gender,
+      isGuardian,
+      learningGoals,
+      password,
+      country,
+      state,
+      city,
+      timeZone: selectedTimeZone,
+      image
+    });
+    localStorage.setItem("students", JSON.stringify(students));
+
     setSuccess(true);
 
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
+    setTimeout(() => navigate("/login"), 3000);
   };
 
   return (
@@ -64,103 +91,95 @@ function StudentSignup() {
       <div className="signup-card">
 
         {/* Profile Image */}
-        <div
-          style={{
-            width: "100px",
-            height: "100px",
-            borderRadius: "50%",
-            background: "#cddc39",
-            margin: "0 auto 20px",
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "50px"
-          }}
-        >
-          {image ? (
-            <img
-              src={image}
-              alt="Profile"
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          ) : (
-            "👤"
-          )}
+        <div style={{
+          width: "100px",
+          height: "100px",
+          borderRadius: "50%",
+          background: "#cddc39",
+          margin: "0 auto 20px",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "50px"
+        }}>
+          {image ? <img src={image} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : "👤"}
         </div>
 
-        {/* Upload */}
-        <input
-          type="file"
-          accept="image/*"
-          id="studentImage"
-          hidden
-          onChange={handleImageChange}
-        />
-        <label htmlFor="studentImage" className="btn outline">
-          Upload Photo
-        </label>
+        <input type="file" accept="image/*" id="studentImage" hidden onChange={handleImageChange} />
+        <label htmlFor="studentImage" className="btn outline">Upload Photo</label>
 
         <h2>Create Student Account</h2>
 
-        {success && (
-          <div style={{ color: "#22c55e", fontWeight: 600, marginBottom: 15 }}>
-            Successfully registered! Redirecting to login...
-          </div>
-        )}
+        {success && <div style={{ color: "#22c55e", fontWeight: 600, marginBottom: 15 }}>
+          Successfully registered! Redirecting to login...
+        </div>}
 
         <form onSubmit={handleSignup}>
-          <input type="text" placeholder="Full Name" required />
-          <input type="date" required />
-          <input type="email" placeholder="Email" required />
+          {/* Basic Info */}
+          <input type="text" placeholder="Full Name" value={fullName} onChange={e => setFullName(e.target.value)} required />
+          <input type="date" value={dob} onChange={e => setDob(e.target.value)} required />
+          <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
 
+          {/* Gender */}
           <div className="radio-group">
-            <label><input type="radio" name="gender" required /> Male</label>
-            <label><input type="radio" name="gender" required /> Female</label>
+            <label>
+              <input type="radio" name="gender" value="male" checked={gender === "male"} onChange={e => setGender(e.target.value)} required /> Male
+            </label>
+            <label>
+              <input type="radio" name="gender" value="female" checked={gender === "female"} onChange={e => setGender(e.target.value)} required /> Female
+            </label>
           </div>
 
-          {/* Country */}
+          {/* Guardian */}
+          <div className="radio-group">
+            <p style={{ fontWeight: 600 }}>Are you a guardian?</p>
+            <label>
+              <input type="radio" name="guardian" value="yes" checked={isGuardian === "yes"} onChange={e => setIsGuardian(e.target.value)} /> Yes
+            </label>
+            <label>
+              <input type="radio" name="guardian" value="no" checked={isGuardian === "no"} onChange={e => setIsGuardian(e.target.value)} /> No
+            </label>
+          </div>
+
+          {/* Learning Goals */}
+          <div className="checkbox-group">
+            <p style={{ fontWeight: 600 }}>I want to learn</p>
+            {["Hifz", "Tajweed", "Qaida", "Nazra"].map(goal => (
+              <label key={goal}><input type="checkbox" checked={learningGoals.includes(goal)} onChange={() => handleGoalChange(goal)} /> {goal}</label>
+            ))}
+          </div>
+
+          {/* Location */}
           <select value={country} onChange={e => setCountry(e.target.value)} required>
             <option value="">Select Country</option>
-            {countries.map(c => (
-              <option key={c.country} value={c.country}>
-                {c.country}
-              </option>
-            ))}
+            {Country.getAllCountries().map(c => <option key={c.isoCode} value={c.isoCode}>{c.name}</option>)}
           </select>
 
-          {/* City */}
-          <select value={city} onChange={e => setCity(e.target.value)} disabled={!country} required>
+          <select value={state} onChange={e => setState(e.target.value)} disabled={!country} required>
+            <option value="">Select State</option>
+            {State.getStatesOfCountry(country).map(s => <option key={s.isoCode} value={s.isoCode}>{s.name}</option>)}
+          </select>
+
+          <select value={city} onChange={e => setCity(e.target.value)} disabled={!state} required>
             <option value="">Select City</option>
-            {cities.map(c => (
-              <option key={c} value={c}>{c}</option>
-            ))}
+            {City.getCitiesOfState(country, state).map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
           </select>
 
           {/* Time Zone */}
-          <select
-            value={timeZone}
-            onChange={e => setTimeZone(e.target.value)}
-            disabled={!country}
-            required
-          >
-            <option value="">Select Time Zone</option>
-            {timeZones.map(tz => (
-              <option key={tz} value={tz}>{tz}</option>
-            ))}
+          <select value={selectedTimeZone} onChange={e => setSelectedTimeZone(e.target.value)} disabled={!country} required>
+            <option value="">Select Time Zone (GMT)</option>
+            {timeZones.map(tz => <option key={tz.name} value={tz.name}>{tz.name} (GMT {tz.offsetStr})</option>)}
           </select>
 
-          <input type="password" placeholder="Password" required />
-          <input type="password" placeholder="Confirm Password" required />
+          {/* Password */}
+          <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
+          <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
 
-          <button type="submit" className="btn primary">
-            Sign Up
-          </button>
+          <button type="submit" className="btn primary">Sign Up</button>
         </form>
 
-        <button className="btn outline" onClick={() => navigate("/")}>
-          Back to Welcome
-        </button>
+        <button className="btn outline" onClick={() => navigate("/")}>Back to Welcome</button>
       </div>
     </div>
   );
