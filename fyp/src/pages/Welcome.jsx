@@ -1,4 +1,4 @@
-import "./Welcome.css";
+import "../style/Welcome.css";
 import { useNavigate } from "react-router-dom";
 
 const ayats = [

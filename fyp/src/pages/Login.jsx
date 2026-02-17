@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Signup.css";
+import "../style/Signup.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -9,60 +9,64 @@ function Login() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+  e.preventDefault();
+  setMessage("");
+  setLoading(true);
 
-    // 🔹 Get users from localStorage
-    const students = JSON.parse(localStorage.getItem("students")) || [];
-    const tutors = JSON.parse(localStorage.getItem("tutors")) || [];
-
-    // 🔹 Merge users with roles
-    const allUsers = [
-      ...students.map(u => ({ ...u, role: "student" })),
-      ...tutors.map(u => ({ ...u, role: "tutor" }))
-    ];
-
-    // 🔹 Find user
-    const user = allUsers.find(
-      u => u.email.toLowerCase() === email.toLowerCase()
+  try {
+    const response = await fetch(
+      "https://localhost:44310/api/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      }
     );
 
-    if (!user) {
-      setMessage("Email is not registered");
-      return;
+    const result = await response.json();
+    setLoading(false);
+
+    if (!response.ok) {
+      throw new Error(result.message || "Login failed");
     }
 
-    if (user.password !== password) {
-      setMessage("Incorrect password");
-      return;
-    }
+    // ✅ Save user in localStorage
+    localStorage.setItem("loggedInUser", JSON.stringify(result.user));
 
-    // 🔹 Save logged-in user session
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
-
-    setMessage("");
     setSuccess(true);
 
+    // ✅ Redirect based on userType
     setTimeout(() => {
-      if (user.role === "student") {
+      if (result.user.userType === "Student") {
         navigate("/student-dashboard");
-      } else {
+      } else if (result.user.userType === "Tutor") {
         navigate("/tutor-dashboard");
       }
-    }, 1200);
-  };
+    }, 1000);
+
+  } catch (error) {
+    setLoading(false);
+    setMessage(error.message);
+  }
+};
+
 
   return (
     <div className="signup-wrapper" style={{ position: "relative" }}>
-
       {/* Quranic Watermark */}
       <div className="quran-bg">
         <span>﷽</span>
       </div>
 
       <div className="signup-card">
-
         {/* Logo */}
         <img
           src="/Logo.png"
@@ -73,9 +77,7 @@ function Login() {
         <h2>Login</h2>
 
         {message && (
-          <div style={{ color: "#ff6b6b", marginBottom: 12 }}>
-            {message}
-          </div>
+          <div style={{ color: "#ff6b6b", marginBottom: 12 }}>{message}</div>
         )}
 
         {success && (
@@ -89,7 +91,7 @@ function Login() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 
@@ -97,12 +99,12 @@ function Login() {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
 
-          <button type="submit" className="btn primary">
-            Login
+          <button type="submit" className="btn primary" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
@@ -111,7 +113,7 @@ function Login() {
             marginTop: 10,
             fontSize: 14,
             cursor: "pointer",
-            textDecoration: "underline"
+            textDecoration: "underline",
           }}
           onClick={() => navigate("/forgot-password")}
         >

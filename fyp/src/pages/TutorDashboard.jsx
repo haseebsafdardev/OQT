@@ -1,65 +1,70 @@
-import "./TutorDashboard.css";
+// src/pages/TutorDashboard.jsx
+import { useState } from "react";
+import "../style/Dashboard.css";
 
-function TutorDashboard() {
-  // TEMP DATA (later replace with backend)
-  const tutor = {
-    name: "Muhammad Zain",
-    course: "Nazra",
-    classesHeld: 5,
-    missedClasses: 0,
-    studentName: "Ali Saif",
-    time: "12:30 - 13:00",
-    lesson: "Qaida",
-    verse: "1 - 5",
-    day: "Monday",
-    image: "/student.jpg"
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const SLOTS = Array.from({ length: 24 }, (_, i) => `${i}:00 - ${i + 1}:00`);
+
+function TutorDashboard({ user }) {
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [selectedSlots, setSelectedSlots] = useState([]);
+
+  const toggleDay = (day) => {
+    setSelectedDays(prev =>
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
+  };
+
+  const toggleSlot = (slot) => {
+    setSelectedSlots(prev =>
+      prev.includes(slot) ? prev.filter(s => s !== slot) : [...prev, slot]
+    );
+  };
+
+  const handleSave = () => {
+    // Save timetable to localStorage (or send API request to backend)
+    const timetable = { userId: user.userID, days: selectedDays, slots: selectedSlots };
+    localStorage.setItem("tutorTimetable", JSON.stringify(timetable));
+    alert("Timetable saved!");
   };
 
   return (
     <div className="dashboard-wrapper">
+      <h2>Welcome, {user.name}</h2>
 
-      {/* Header */}
-      <header className="dashboard-header">
-        <h2>{tutor.name}</h2>
-        <img
-          src="/profile.jpg"
-          alt="Tutor"
-          className="profile-pic"
-        />
-      </header>
-
-      {/* Weekly Card */}
-      <div className="card weekly-card">
-        <div>
-          <p><strong>Weekly Classes</strong></p>
-          <p>Course: {tutor.course}</p>
+      <section className="timetable">
+        <h3>Select Available Days:</h3>
+        <div className="days-checkboxes">
+          {DAYS.map(day => (
+            <label key={day}>
+              <input
+                type="checkbox"
+                checked={selectedDays.includes(day)}
+                onChange={() => toggleDay(day)}
+              />{" "}
+              {day}
+            </label>
+          ))}
         </div>
-        <div className="stats">
-          <p>Classes Held: <strong>{tutor.classesHeld}</strong></p>
-          <p>Missed: <strong>{tutor.missedClasses}</strong></p>
+
+        <h3>Select Time Slots (1-hour each):</h3>
+        <div className="slots-checkboxes">
+          {SLOTS.map(slot => (
+            <label key={slot}>
+              <input
+                type="checkbox"
+                checked={selectedSlots.includes(slot)}
+                onChange={() => toggleSlot(slot)}
+              />{" "}
+              {slot}
+            </label>
+          ))}
         </div>
-      </div>
 
-      {/* Upcoming Class */}
-      <div className="card upcoming-card">
-        <h3>Upcoming Class</h3>
-
-        <div className="student-row">
-          <img src={tutor.image} alt="Student" />
-          <div className="student-info">
-            <p className="name">{tutor.studentName}</p>
-            <p>{tutor.time}</p>
-            <p>{tutor.lesson}</p>
-            <p>Verse ({tutor.verse})</p>
-          </div>
-
-          <div className="action">
-            <p>{tutor.day}</p>
-            <button>Start Now</button>
-          </div>
-        </div>
-      </div>
-
+        <button className="btn primary" onClick={handleSave}>
+          Save Timetable
+        </button>
+      </section>
     </div>
   );
 }

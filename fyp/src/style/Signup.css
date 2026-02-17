@@ -3,9 +3,9 @@
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
   background: linear-gradient(135deg, #2fb7a2, #218b80);
   padding: 40px 20px;
+
 }
 
 /* Signup Card */
@@ -58,25 +58,33 @@ select:focus {
   flex-wrap: wrap;
   gap: 14px;
   justify-content: flex-start;
-  margin: 18px 0;
+  margin: 10px 5px;
   text-align: left;
 }
 
 .radio-group p,
 .checkbox-group p {
   width: 100%;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 800px;
   margin-bottom: 6px;
+  align-items: center;
+  text-align: left;
+  margin-left: 5px;
+  
 }
 
 .radio-group label,
 .checkbox-group label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 4px;
+  font-size: 20px;
   cursor: pointer;
+  text-align: left;
+  margin-bottom: 2px;
+  vertical-align: auto;
+
 }
 
 /* Buttons */
