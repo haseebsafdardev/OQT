@@ -39,7 +39,7 @@ function Login() {
     }
 
     // ✅ Save user in localStorage
-    localStorage.setItem("loggedInUser", JSON.stringify(result.user));
+localStorage.setItem("loggedInUser", JSON.stringify(result.user));
 
     setSuccess(true);
 

@@ -1,83 +1,87 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/Dashboard.css";
 
 function StudentDashboard() {
   const navigate = useNavigate();
 
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
-
+  // ✅ Check if user is logged in & student
   useEffect(() => {
-    if (!user || user.role !== "student") {
+    const loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!loggedIn || loggedIn.userType !== "Student") {
       navigate("/login");
     }
-  }, [navigate, user]);
+  }, [navigate]);
 
-  if (!user) return null;
+  // Dummy student data
+  const [student, setStudent] = useState({
+    name: "Ali Khan",
+    email: "ali@student.com",
+    city: "Karachi",
+    profile: null,
+    lessonPlans: ["Lesson 1: Nazra", "Lesson 2: Tajweed", "Lesson 3: Hifz"],
+    classesAttended: [
+      { subject: "Tajweed", date: "2026-02-10", tutor: "Sara Ahmed" },
+      { subject: "Hifz", date: "2026-02-12", tutor: "Sara Ahmed" },
+    ],
+    schedule: [
+      { day: "Monday", time: "10:00 - 11:00" },
+      { day: "Wednesday", time: "14:00 - 15:00" },
+    ],
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem("loggedInUser");
+    navigate("/login");
+  };
 
   return (
     <div className="dashboard-wrapper">
-
-      {/* Top Bar */}
-      <div className="dashboard-header">
-        <div className="header-left">
-          <h3>{user.fullName}</h3>
-          <span>Student</span>
+      <aside className="dashboard-sidebar">
+        <div className="profile-card">
+          <div className="profile-pic">{student.profile ? <img src={student.profile} alt="Profile"/> : "👤"}</div>
+          <h3>{student.name}</h3>
+          <p>{student.email}</p>
+          <p>{student.city}</p>
+          <button className="btn logout-btn" onClick={handleLogout}>Logout</button>
         </div>
-        <img
-          src={user.image || "https://i.pravatar.cc/100"}
-          alt="profile"
-          className="profile-pic"
-        />
-      </div>
+      </aside>
 
-      {/* Main Content */}
-      <div className="dashboard-content">
+      <main className="dashboard-main">
+        <h2>Welcome, {student.name}</h2>
 
-        {/* Weekly Card */}
-        <div className="weekly-card">
-          <div className="weekly-top">
-            <div>
-              <p className="title">Weekly Classes</p>
-              <p>Course: <strong>Nazra</strong></p>
-            </div>
-            <div className="stats">
-              <p>Classes Held: <strong>1</strong></p>
-              <p>Missed Classes: <strong>1</strong></p>
-            </div>
-          </div>
-
-          <div className="divider"></div>
-
-          {/* Upcoming Class */}
-          <p className="subtitle">Upcoming Class</p>
-
-          <div className="class-row">
-            <img
-              src="https://i.pravatar.cc/80"
-              alt="Tutor"
-              className="tutor-pic"
-            />
-
-            <div className="class-info">
-              <h4>Muhammad Zain</h4>
-              <p>12:30 – 13:00 · Mon</p>
-              <p className="small">Lesson Plan 1 · Verse (1–5)</p>
-            </div>
-
-            <button className="join-btn">Join</button>
+        <div className="dashboard-section">
+          <h3>Schedule</h3>
+          <div className="card-grid">
+            {student.schedule.map((s, i) => (
+              <div key={i} className="card">
+                <p><strong>{s.day}</strong></p>
+                <p>{s.time}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      {/* Bottom Navigation */}
-      <div className="bottom-nav">
-        <button className="active">Home</button>
-        <button>Schedule</button>
-        <button>Manage</button>
-        <button>Tutors</button>
-        <button>History</button>
-      </div>
+        <div className="dashboard-section">
+          <h3>Classes Attended</h3>
+          <div className="card-grid">
+            {student.classesAttended.map((c, i) => (
+              <div key={i} className="card">
+                <p><strong>{c.subject}</strong></p>
+                <p>Date: {c.date}</p>
+                <p>Tutor: {c.tutor}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="dashboard-section">
+          <h3>Lesson Plans</h3>
+          <ul>
+            {student.lessonPlans.map((lp, i) => <li key={i}>{lp}</li>)}
+          </ul>
+        </div>
+      </main>
     </div>
   );
 }
