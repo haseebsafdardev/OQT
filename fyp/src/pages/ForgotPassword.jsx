@@ -12,12 +12,11 @@ function ForgotPassword() {
     e.preventDefault();
     setSent(true);
 
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
+setTimeout(() => {
+  navigate("/reset-password");
+}, 2000);
   };
-
-  return (
+   return (
     <div className="signup-wrapper">
       <div className="signup-card">
 
@@ -50,5 +49,4 @@ function ForgotPassword() {
     </div>
   );
 }
-
 export default ForgotPassword;

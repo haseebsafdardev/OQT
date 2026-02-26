@@ -12,51 +12,40 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setMessage("");
-  setLoading(true);
+    e.preventDefault();
+    setMessage("");
+    setLoading(true);
 
-  try {
-    const response = await fetch(
-      "https://localhost:44310/api/auth/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
+    try {
+      const response = await fetch(
+        `https://localhost:44310/api/auth/login?email=${email}&password=${password}`, { method: "POST" }
+      );
+      console.log(response);
+      const result = await response.json();
+      setLoading(false);
+      if (!response.ok) {
+        throw new Error(result.message || "Login failed");
       }
-    );
 
-    const result = await response.json();
-    setLoading(false);
+      // ✅ Save user in localStorage
+      localStorage.setItem("loggedInUser", JSON.stringify(result.user));
 
-    if (!response.ok) {
-      throw new Error(result.message || "Login failed");
+      setSuccess(true);
+
+      // ✅ Redirect based on userType
+      setTimeout(() => {
+        if (result.user.userType === "Student") {
+          navigate("/student-dashboard");
+        } else if (result.user.userType === "Tutor") {
+          navigate("/tutor-dashboard");
+        }
+      }, 1000);
+
+    } catch (error) {
+      setLoading(false);
+      setMessage(error.message);
     }
-
-    // ✅ Save user in localStorage
-localStorage.setItem("loggedInUser", JSON.stringify(result.user));
-
-    setSuccess(true);
-
-    // ✅ Redirect based on userType
-    setTimeout(() => {
-      if (result.user.userType === "Student") {
-        navigate("/student-dashboard");
-      } else if (result.user.userType === "Tutor") {
-        navigate("/tutor-dashboard");
-      }
-    }, 1000);
-
-  } catch (error) {
-    setLoading(false);
-    setMessage(error.message);
-  }
-};
+  };
 
 
   return (

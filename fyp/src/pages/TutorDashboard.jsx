@@ -6,17 +6,14 @@ function TutorDashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loggedIn = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (!loggedIn || loggedIn.userType !== "Tutor") {
-      navigate("/login");
-    }
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!user || user.userType !== "Tutor") navigate("/login");
   }, [navigate]);
 
-  // Dummy tutor data
-  const [tutor, setTutor] = useState({
-    name: "Sara Ahmed",
-    email: "sara@tutor.com",
-    city: "Lahore",
+  const [tutor] = useState({
+    name: "Shafeeq Gondal",
+    email: "shafeeq@gmail.com",
+    city: "Islamabad",
     profile: null,
     lessonPlans: ["Lesson 1: Nazra", "Lesson 2: Tajweed", "Lesson 3: Hifz"],
     classesHeld: [
@@ -36,50 +33,63 @@ function TutorDashboard() {
 
   return (
     <div className="dashboard-wrapper">
+      
+      {/* Sidebar */}
       <aside className="dashboard-sidebar">
-        <div className="profile-card">
-          <div className="profile-pic">{tutor.profile ? <img src={tutor.profile} alt="Profile"/> : "👤"}</div>
-          <h3>{tutor.name}</h3>
-          <p>{tutor.email}</p>
-          <p>{tutor.city}</p>
-          <button className="btn logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
+        <h2 className="logo">Tutor Panel</h2>
+
+        <ul className="sidebar-menu">
+          <li onClick={() => navigate("/tutor-dashboard")}>Dashboard</li>
+          <li onClick={() => navigate("/tutor-schedule")}>Schedule</li>
+          <li onClick={() => navigate("/tutor-history")}>History</li>
+          <li onClick={() => navigate("/update-profile")}>Profile</li>
+        </ul>
       </aside>
 
+      {/* Main */}
       <main className="dashboard-main">
-        <h2>Welcome, {tutor.name}</h2>
 
-        <div className="dashboard-section">
+        {/* Header */}
+        <div className="dashboard-header">
+          <h2>Welcome, {tutor.name}</h2>
+
+          <div className="header-profile">
+            <img
+              src={tutor.profile || "/default-avatar.png"}
+              alt="Profile"
+              className="header-avatar"
+            />
+            <button className="logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        </div>
+
+        {/* Schedule */}
+        <div className="card">
           <h3>Schedule</h3>
-          <div className="card-grid">
-            {tutor.schedule.map((s, i) => (
-              <div key={i} className="card">
-                <p><strong>{s.day}</strong></p>
-                <p>{s.time}</p>
-              </div>
-            ))}
-          </div>
+          {tutor.schedule.map((s, i) => (
+            <div key={i} className="weekly-card">
+              <span>{s.day}</span>
+              <span>{s.time}</span>
+            </div>
+          ))}
         </div>
 
-        <div className="dashboard-section">
+        {/* Classes */}
+        <div className="card">
           <h3>Classes Held</h3>
-          <div className="card-grid">
-            {tutor.classesHeld.map((c, i) => (
-              <div key={i} className="card">
-                <p><strong>{c.subject}</strong></p>
-                <p>Date: {c.date}</p>
-                <p>Student: {c.student}</p>
+          {tutor.classesHeld.map((c, i) => (
+            <div key={i} className="student-row">
+              <div className="student-info">
+                <p className="name">{c.student}</p>
+                <p>{c.subject}</p>
+                <p>{c.date}</p>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
-        <div className="dashboard-section">
-          <h3>Lesson Plans</h3>
-          <ul>
-            {tutor.lessonPlans.map((lp, i) => <li key={i}>{lp}</li>)}
-          </ul>
-        </div>
       </main>
     </div>
   );

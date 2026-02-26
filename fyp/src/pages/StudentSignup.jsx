@@ -7,10 +7,8 @@ import "../style/Signup.css";
 function StudentSignup() {
   const navigate = useNavigate();
 
-  // ✅ Separate states for preview & real file
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-
   const [success, setSuccess] = useState(false);
 
   const [fullName, setFullName] = useState("");
@@ -27,7 +25,7 @@ function StudentSignup() {
   const [timeZones, setTimeZones] = useState([]);
   const [selectedTimeZone, setSelectedTimeZone] = useState("");
 
-  // ✅ Load timezones when country changes
+  // ✅ Load timezones
   useEffect(() => {
     if (!country) {
       setTimeZones([]);
@@ -38,13 +36,12 @@ function StudentSignup() {
     setTimeZones(tzs || []);
   }, [country]);
 
-  // ✅ Correct Image Logic
+  // ✅ Image Preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-
     if (file) {
-      setImageFile(file); // real file for backend
-      setImagePreview(URL.createObjectURL(file)); // preview only
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -61,38 +58,41 @@ function StudentSignup() {
       return;
     }
 
-    const studentData = {
+    const userType = isGuardian === "yes" ? "Guardian" : "Student";
+
+    const userData = {
       name: fullName,
-      email: email,
-      password: password,
-      gender: gender,
+      email,
+      password,
+      gender,
       dateOfBirth: dob,
-      userType: "Student",
-      country: country,
-      city: city,
+      userType,
+      country,
+      city,
       timezone: selectedTimeZone,
       preferred_tutor: "Male",
       subject: learningGoal
     };
 
     const formData = new FormData();
-    formData.append("data", JSON.stringify(studentData));
+    formData.append("data", JSON.stringify(userData));
 
     if (imageFile) {
       formData.append("image", imageFile);
     }
 
+    const apiUrl =
+      userType === "Guardian"
+        ? "https://localhost:44310/api/guardian/add"
+        : "https://localhost:44310/api/students/add";
+
     try {
-      const response = await fetch(
-        "https://localhost:44310/api/Student/addStudent",
-        {
-          method: "POST",
-          body: formData
-        }
-      );
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: formData
+      });
 
       const result = await response.json();
-      console.log(result);
 
       if (result.success) {
         setSuccess(true);
@@ -102,7 +102,7 @@ function StudentSignup() {
       }
 
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error:", error);
       alert("Something went wrong.");
     }
   };
@@ -113,11 +113,7 @@ function StudentSignup() {
 
         {/* Profile Image */}
         <div className="profile-image">
-          {imagePreview ? (
-            <img src={imagePreview} alt="Profile" />
-          ) : (
-            "👤"
-          )}
+          {imagePreview ? <img src={imagePreview} alt="Profile" /> : "👤"}
         </div>
 
         <input
@@ -132,7 +128,7 @@ function StudentSignup() {
           Upload Photo
         </label>
 
-        <h2>Create Student Account</h2>
+        <h2>Create Account</h2>
 
         {success && (
           <div className="success-msg">
@@ -167,49 +163,37 @@ function StudentSignup() {
           {/* Gender */}
           <div className="radio-group">
             <p>Gender</p>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="male"
-                onChange={(e) => setGender(e.target.value)}
-                required
-              />
-              Male
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="female"
-                onChange={(e) => setGender(e.target.value)}
-              />
-              Female
-            </label>
+            {["male", "female"].map((g) => (
+              <label key={g}>
+                <input
+                  type="radio"
+                  name="gender"
+                  value={g}
+                  checked={gender === g}
+                  onChange={(e) => setGender(e.target.value)}
+                  required
+                />
+                {g.charAt(0).toUpperCase() + g.slice(1)}
+              </label>
+            ))}
           </div>
 
           {/* Guardian */}
           <div className="radio-group">
             <p>Are you a guardian?</p>
-            <label>
-              <input
-                type="radio"
-                name="guardian"
-                value="yes"
-                onChange={(e) => setIsGuardian(e.target.value)}
-                required
-              />
-              Yes
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="guardian"
-                value="no"
-                onChange={(e) => setIsGuardian(e.target.value)}
-              />
-              No
-            </label>
+            {["yes", "no"].map((value) => (
+              <label key={value}>
+                <input
+                  type="radio"
+                  name="guardian"
+                  value={value}
+                  checked={isGuardian === value}
+                  onChange={(e) => setIsGuardian(e.target.value)}
+                  required
+                />
+                {value.toUpperCase()}
+              </label>
+            ))}
           </div>
 
           {/* Learning Goal */}
@@ -241,13 +225,13 @@ function StudentSignup() {
           >
             <option value="">Select Country</option>
             {Country.getAllCountries().map((c) => (
-              <option key={c.isoCode} value={c.isoCode}>
+              <option key={`${c.isoCode}-${c.name}`} value={c.isoCode}>
                 {c.name}
               </option>
             ))}
           </select>
 
-          {/* City */}
+          {/* City (FIXED UNIQUE KEY) */}
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
@@ -255,8 +239,11 @@ function StudentSignup() {
           >
             <option value="">Select City</option>
             {country &&
-              City.getCitiesOfCountry(country)?.map((c) => (
-                <option key={c.name} value={c.name}>
+              City.getCitiesOfCountry(country)?.map((c, index) => (
+                <option
+                  key={`${c.name}-${c.stateCode}-${c.latitude}-${index}`}
+                  value={c.name}
+                >
                   {c.name}
                 </option>
               ))}
@@ -270,7 +257,7 @@ function StudentSignup() {
           >
             <option value="">Select Time Zone (GMT)</option>
             {timeZones.map((tz) => (
-              <option key={tz.name} value={tz.name}>
+              <option key={`${tz.name}-${tz.utcOffset}`} value={tz.name}>
                 {tz.name} (GMT {tz.offsetStr})
               </option>
             ))}
