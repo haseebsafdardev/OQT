@@ -1,1 +1,1 @@
-export const ipconfig = 'https://localhost:44310/api/'
+export const ipconfig = 'http://localhost/webapi/api/'

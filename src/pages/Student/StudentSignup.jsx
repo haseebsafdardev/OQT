@@ -86,7 +86,7 @@ console.log(formData);
     const apiUrl =
       userType === "Guardian"
         ? `${ipconfig}guardian/add`
-        : `${ipconfig}students/add`;
+        : `${ipconfig}students/addStudent`;
 
     try {
       const response = await fetch(apiUrl, {
