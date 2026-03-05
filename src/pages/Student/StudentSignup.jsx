@@ -82,7 +82,7 @@ function StudentSignup() {
     if (imageFile) {
       formData.append("image", imageFile);
     }
-
+console.log(formData);
     const apiUrl =
       userType === "Guardian"
         ? `${ipconfig}guardian/add`

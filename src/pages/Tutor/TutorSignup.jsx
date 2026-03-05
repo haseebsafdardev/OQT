@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Country, State, City } from "country-state-city";
+import { Country, City } from "country-state-city";
 import ctz from "countries-and-timezones";
+import '../../style/Tutor/signup.css'
+import {ipconfig} from '../../config.jsx'
 const TutorSignup = () => {
   const navigate = useNavigate();
 
@@ -19,7 +21,6 @@ const TutorSignup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
   const [city, setCity] = useState("");
   const [timeZones, setTimeZones] = useState([]);
   const [selectedTimeZone, setSelectedTimeZone] = useState("");
@@ -90,16 +91,15 @@ const handleSignup = async (e) => {
       formData.append("tutorImage", image);
     }
 
-    // ✅ FIX: store response
+    console.log(formData);
     const response = await fetch(
-      "https://localhost:44310/api/Tutor/addTutor",
+      `${ipconfig}Tutor/addTutor`,
       {
         method: "POST",
         body: formData,
       }
     );
 
-    // Check if server returned anything
     const text = await response.text();
     const data = text ? JSON.parse(text) : null;
 
@@ -162,11 +162,11 @@ const handleSignup = async (e) => {
           {/* Gender */}
           <div className="radio-group">
             <label>
-              <input type="radio" value="male" checked={gender === "male"} onChange={e => setGender(e.target.value)} />
+              <input type="radio" value="Male" checked={gender === "Male"} onChange={e => setGender(e.target.value)} />
               Male
             </label>
             <label>
-              <input type="radio" value="female" checked={gender === "female"} onChange={e => setGender(e.target.value)} />
+              <input type="radio" value="Memale" checked={gender === "Female"} onChange={e => setGender(e.target.value)} />
               Female
             </label>
           </div>
@@ -174,7 +174,7 @@ const handleSignup = async (e) => {
           {/* Teaching Goals */}
           <div className="checkbox-group">
             <p><strong>I can teach</strong></p>
-            {["Qaida", "Nazra", "Tajweed", "Hifz"].map(goal => (
+            {["Nazra", "Tajweed", "Hifz"].map(goal => (
               <label key={goal}>
                 <input
                   type="checkbox"
@@ -194,16 +194,11 @@ const handleSignup = async (e) => {
             ))}
           </select>
 
-          <select value={state} onChange={e => setState(e.target.value)} disabled={!country} required>
-            <option value="">Select State</option>
-            {State.getStatesOfCountry(country).map(s => (
-              <option key={s.isoCode} value={s.isoCode}>{s.name}</option>
-            ))}
-          </select>
+     
 
-          <select value={city} onChange={e => setCity(e.target.value)} disabled={!state} required>
+         <select value={city} onChange={e => setCity(e.target.value)} disabled={!country} required>
             <option value="">Select City</option>
-            {City.getCitiesOfState(country, state).map(c => (
+            {City.getCitiesOfCountry(country).map(c => (
               <option key={c.name} value={c.name}>{c.name}</option>
             ))}
           </select>
