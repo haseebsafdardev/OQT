@@ -1,0 +1,1 @@
+export const ipconfig = 'https://localhost:44310/api/'

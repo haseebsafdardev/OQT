@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Country, City } from "country-state-city";
 import ctz from "countries-and-timezones";
 import '../../style/Student/signup.css'
+import {ipconfig} from '../../config.jsx'
 function StudentSignup() {
   const navigate = useNavigate();
 
@@ -59,7 +60,7 @@ function StudentSignup() {
       return;
     }
 
-    const userType = isGuardian === "yes" ? "Guardian" : "Student";
+    const userType = isGuardian === "Yes" ? "Guardian" : "Student";
 
     const userData = {
       name: fullName,
@@ -84,8 +85,8 @@ function StudentSignup() {
 
     const apiUrl =
       userType === "Guardian"
-        ? "https://localhost:44310/api/guardian/add"
-        : "https://localhost:44310/api/students/add";
+        ? `${ipconfig}guardian/add`
+        : `${ipconfig}students/add`;
 
     try {
       const response = await fetch(apiUrl, {
