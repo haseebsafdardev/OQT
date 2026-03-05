@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Country, State, City } from "country-state-city";
 import ctz from "countries-and-timezones";
-import "../style/Signup.css";
-
-function TutorSignup() {
+const TutorSignup = () => {
   const navigate = useNavigate();
 
   const [image, setImage] = useState(null);

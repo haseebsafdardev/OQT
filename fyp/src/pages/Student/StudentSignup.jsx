@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Country, City } from "country-state-city";
 import ctz from "countries-and-timezones";
-import "../style/Signup.css";
-
+import '../../style/Student/signup.css'
 function StudentSignup() {
   const navigate = useNavigate();
 
@@ -14,9 +14,10 @@ function StudentSignup() {
   const [fullName, setFullName] = useState("");
   const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("");
-  const [isGuardian, setIsGuardian] = useState("");
-  const [learningGoal, setLearningGoal] = useState("");
+  const [gender, setGender] = useState("Male");
+  const [isGuardian, setIsGuardian] = useState("No");
+  const [learningGoal, setLearningGoal] = useState("Nazra");
+  const [prefferedTutor, setprefferedTutor] = useState("Male");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -70,7 +71,7 @@ function StudentSignup() {
       country,
       city,
       timezone: selectedTimeZone,
-      preferred_tutor: "Male",
+      preferred_tutor: prefferedTutor,
       subject: learningGoal
     };
 
@@ -163,7 +164,9 @@ function StudentSignup() {
           {/* Gender */}
           <div className="radio-group">
             <p>Gender</p>
-            {["male", "female"].map((g) => (
+             <div className="radio-options">
+
+            {["Male", "Female"].map((g) => (
               <label key={g}>
                 <input
                   type="radio"
@@ -172,16 +175,18 @@ function StudentSignup() {
                   checked={gender === g}
                   onChange={(e) => setGender(e.target.value)}
                   required
-                />
+                  />
                 {g.charAt(0).toUpperCase() + g.slice(1)}
               </label>
             ))}
+            </div>
           </div>
 
           {/* Guardian */}
           <div className="radio-group">
             <p>Are you a guardian?</p>
-            {["yes", "no"].map((value) => (
+             <div className="radio-options">
+            {["Yes", "No"].map((value) => (
               <label key={value}>
                 <input
                   type="radio"
@@ -190,16 +195,19 @@ function StudentSignup() {
                   checked={isGuardian === value}
                   onChange={(e) => setIsGuardian(e.target.value)}
                   required
-                />
+                  />
                 {value.toUpperCase()}
               </label>
             ))}
+            </div>
           </div>
 
           {/* Learning Goal */}
           <div className="radio-group">
             <p>I want to learn</p>
-            {["Hifz", "Tajweed", "Nazra"].map((goal) => (
+             <div className="radio-options">
+
+            {["Nazra", "Tajweed", "Hifz"].map((goal) => (
               <label key={goal}>
                 <input
                   type="radio"
@@ -208,10 +216,37 @@ function StudentSignup() {
                   checked={learningGoal === goal}
                   onChange={(e) => setLearningGoal(e.target.value)}
                   required
-                />
+                  />
                 {goal}
               </label>
             ))}
+            </div>
+          </div>
+
+
+
+
+
+          {/* Select Preffered Tutor */}
+
+          <div className="radio-group">
+            <p>Select Preferred Tutor</p>
+             <div className="radio-options">
+
+            {["Male", "Female", "Both"].map((goal) => (
+              <label key={goal}>
+                <input
+                  type="radio"
+                  name="preferredTutor"
+                  value={goal}
+                  checked={prefferedTutor === goal}
+                  onChange={(e) => setprefferedTutor(e.target.value)}
+                  required
+                  />
+                {goal}
+              </label>
+            ))}
+            </div>
           </div>
 
           {/* Country */}

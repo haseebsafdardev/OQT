@@ -1,6 +1,5 @@
-import "../style/Welcome.css";
 import { useNavigate } from "react-router-dom";
-
+import '../style/welcome.css'
 const ayats = [
   "﷽",
   "إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ",

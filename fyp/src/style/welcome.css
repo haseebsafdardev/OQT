@@ -1,141 +1,96 @@
-
-/* ===============================
-   MAIN WRAPPER
-================================ */
+/* Main wrapper */
 .welcome-wrapper {
+  height: 100vh;
   width: 100%;
-  min-height: 100svh;
-  background: linear-gradient(135deg, #2fb7a2, #0e5f57);
+  background: linear-gradient(135deg, #0f766e, #065f46);
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
   overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* ===============================
-   QURANIC WATERMARK BACKGROUND
-================================ */
+/* Quranic Pattern Background */
 .quran-pattern {
   position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  opacity: 0.08;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .ayat {
-  position: absolute;
+  font-size: 40px;
+  margin: 40px;
+  color: white;
   font-family: "Amiri", serif;
-  font-size: clamp(22px, 5vw, 48px);
-  color: rgba(255, 255, 255, 0.25);
-  user-select: none;
-  transform: rotate(-20deg);
-  white-space: nowrap;
 }
 
-/* Ayat positions */
-.ayat:nth-child(1) { top: 8%; left: 6%; }
-.ayat:nth-child(2) { top: 28%; left: 55%; }
-.ayat:nth-child(3) { top: 55%; left: 12%; }
-.ayat:nth-child(4) { top: 48%; left: 72%; }
-.ayat:nth-child(5) { top: 78%; left: 38%; }
-
-/* ===============================
-   CARD CONTENT
-================================ */
+/* Welcome Card */
 .welcome-card {
-  position: relative;
-  z-index: 2;
-  background: rgba(91, 224, 190, 0);
-  width: 100%;
-  max-width: 460px;
-  padding: 40px 32px;
+  background: white;
+  padding: 40px 35px;
   border-radius: 18px;
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.644);
+  width: 380px;
   text-align: center;
-  backdrop-filter: blur(4px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  z-index: 2;
 }
 
-/* ===============================
-   LOGO & TEXT
-================================ */
+/* Logo */
 .logo {
-  width: 130px;
-  margin-bottom: 18px;
+  width: 80px;
+  margin-bottom: 15px;
 }
 
+/* Title */
 .title {
-  font-size: 24px;
-  color: #0e5f57;
-  margin-bottom: 28px;
-  font-weight: 600;
+  font-size: 22px;
+  color: #065f46;
+  margin-bottom: 25px;
 }
 
-/* ===============================
-   BUTTONS
-================================ */
+/* Buttons */
 .btn {
   width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  border-radius: 30px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  margin: 8px 0;
   cursor: pointer;
-  margin-bottom: 14px;
-  font-family: inherit;
-  transition: all 0.3s ease;
-  touch-action: manipulation;
+  transition: 0.3s;
 }
 
-.btn.primary {
-  background: #cddc39;
-  color: #0e5f57;
+/* Primary button */
+.primary {
+  background: #0f766e;
+  color: white;
   border: none;
-  font-weight: 600;
 }
 
-.btn.primary:hover {
-  background: #b8ca32;
+.primary:hover {
+  background: #115e59;
 }
 
-.btn.outline {
+/* Outline button */
+.outline {
   background: transparent;
-  border: 2px solid #0e5f57;
-  color: #0e5f57;
-  font-weight: 600;
+  border: 2px solid #0f766e;
+  color: #0f766e;
 }
 
-.btn.outline:hover {
-  background: #0e5f57;
-  color: #ffffff;
+.outline:hover {
+  background: #0f766e;
+  color: white;
 }
 
-/* ===============================
-   DIVIDER
-================================ */
+/* Divider */
 .divider {
-  margin: 20px 0;
-  font-size: 14px;
-  color: #0d1a16;
-  font-weight: 600;
-}
-
-/* ===============================
-   MOBILE RESPONSIVE
-================================ */
-@media (max-width: 480px) {
-  .welcome-card {
-    padding: 28px 22px;
-  }
-
-  .title {
-    font-size: 20px;
-  }
-
-  .logo {
-    width: 110px;
-  }
-
-  .btn {
-    font-size: 15px;
-  }
+  margin: 18px 0;
+  font-weight: bold;
+  color: #888;
 }
