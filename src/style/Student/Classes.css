@@ -1,0 +1,89 @@
+.classesPage {
+    background: #f5f6fa;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.classesContainer {
+    max-width: 700px;
+    margin: auto;
+}
+
+.classCard {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.infoContainer {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.tutorName {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: #222;
+}
+
+.meta {
+    font-size: 12px;
+    color: #666;
+    margin-top: 3px;
+}
+
+.date {
+    font-size: 11px;
+    color: #999;
+    margin-top: 3px;
+}
+
+.joinBtn {
+    background: #4a6cf7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.joinBtn:hover {
+    opacity: 0.9;
+}
+
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loaderBox {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.emptyText {
+    text-align: center;
+    color: gray;
+    margin-top: 40px;
+}

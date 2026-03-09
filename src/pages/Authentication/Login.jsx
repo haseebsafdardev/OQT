@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../style/Signup.css";
+import '../../style/Student/signup.css';
+import { ipconfig } from "../../config";
+import { useAuth } from "../../context/Auth";
+export default function Login() {
 
-function Login() {
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("rehan123@gmail.com");
+  const [password, setPassword] = useState("1234567890");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,7 +21,7 @@ function Login() {
 
     try {
       const response = await fetch(
-        `https://localhost:44310/api/auth/login?email=${email}&password=${password}`, { method: "POST" }
+        `${ipconfig}/auth/login?email=${email}&password=${password}`, { method: "POST" }
       );
       console.log(response);
       const result = await response.json();
@@ -27,19 +30,15 @@ function Login() {
         throw new Error(result.message || "Login failed");
       }
 
-      // ✅ Save user in localStorage
-      localStorage.setItem("loggedInUser", JSON.stringify(result.user));
-
       setSuccess(true);
-
-      // ✅ Redirect based on userType
-      setTimeout(() => {
-        if (result.user.userType === "Student") {
-          navigate("/student-dashboard");
-        } else if (result.user.userType === "Tutor") {
-          navigate("/tutor-dashboard");
-        }
-      }, 1000);
+      await login(result?.user);
+      if (result?.user?.userType === "Student" || result?.user?.userType === "Child") {
+        navigate("/student-dashboard");
+      } else if (result?.user?.userType === "Tutor") {
+        navigate("/tutor-dashboard");
+      } else if (result?.user?.userType === "Guardian") {
+        navigate("/tutor-dashboard");
+      }
 
     } catch (error) {
       setLoading(false);
@@ -50,10 +49,6 @@ function Login() {
 
   return (
     <div className="signup-wrapper" style={{ position: "relative" }}>
-      {/* Quranic Watermark */}
-      <div className="quran-bg">
-        <span>﷽</span>
-      </div>
 
       <div className="signup-card">
         {/* Logo */}
@@ -97,7 +92,7 @@ function Login() {
           </button>
         </form>
 
-        <p
+        {/* <p
           style={{
             marginTop: 10,
             fontSize: 14,
@@ -107,14 +102,13 @@ function Login() {
           onClick={() => navigate("/forgot-password")}
         >
           Forgot Password?
-        </p>
+        </p> */}
 
         <button className="btn outline" onClick={() => navigate("/")}>
-          Back to Welcome
+          Back
         </button>
       </div>
     </div>
   );
 }
 
-export default Login;

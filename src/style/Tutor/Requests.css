@@ -1,0 +1,155 @@
+.requestsPage {
+    background: #f5f6fa;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.requestsContainer {
+    max-width: 700px;
+    margin: auto;
+}
+
+.requestCard {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.topRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.info {
+    flex: 1;
+}
+
+.acceptBtn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.rejectBtn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.divider {
+    height: 1px;
+    background: #eee;
+    margin: 12px 0;
+}
+
+.infoRow {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+}
+
+.scheduleBtn {
+    margin-top: 12px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: #3b5bdb;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scheduleModal {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.modalAvatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.dayBox {
+    background: #fafbff;
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.timeBadge {
+    background: #eef4ff;
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    margin: 4px;
+}
+
+.closeBtn {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    background: #ddd;
+    cursor: pointer;
+}
+
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    font-size: 20px;
+}
+
+.emptyText {
+    text-align: center;
+    color: gray;
+    margin-top: 40px;
+}

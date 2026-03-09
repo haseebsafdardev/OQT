@@ -26,6 +26,18 @@ function Welcome() {
         <img src="/Logo.png" alt="Online Quran Tutor" className="logo" />
         <h1 className="title">Learn Quran Anytime, Anywhere</h1>
 
+
+        {/* Login */}
+        <button
+          className="btn outline"
+          onClick={() => navigate("/login")}
+        >
+          Sign In
+        </button>
+
+
+        <div className="divider">OR</div>
+
         {/* Student Signup */}
         <button
           className="btn primary"
@@ -34,15 +46,6 @@ function Welcome() {
           Sign Up as Student
         </button>
 
-        {/* Student Login */}
-        <button
-          className="btn outline"
-          onClick={() => navigate("/login")}
-        >
-          Sign In
-        </button>
-
-        <div className="divider">OR</div>
 
         {/* Tutor Signup */}
         <button
@@ -50,14 +53,6 @@ function Welcome() {
           onClick={() => navigate("/signup-tutor")}
         >
           Sign Up as Tutor
-        </button>
-
-        {/* Tutor Login */}
-        <button
-          className="btn outline"
-          onClick={() => navigate("/login")}
-        >
-          Sign In
         </button>
       </div>
     </div>
